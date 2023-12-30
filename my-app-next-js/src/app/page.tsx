@@ -9,7 +9,7 @@ export default function Home() {
           Get started by editing
           <code className={styles.code}>src/app/page.tsx</code>
         </p>
-        <p>Pradip</p>
+        <p>Pradipn 111</p>
         <div>
           <a
             href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
