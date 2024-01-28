@@ -1,96 +1,57 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client'
+import Header from "@/app/components/Header/Header";
+import data from "@/app/Data/data";
+import {useState} from "react";
+import Basket from "@/app/components/Basket/Basket";
+import Main from "@/app/components/Main/Main";
 
+interface Product {
+    id: string;
+    name: string;
+    price: number;
+    image: string;
+}
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <p>Pradip</p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    const { products } = data;
+    const [cartItems, setCartItems] = useState<Product[]>([]);
+
+    const onAdd = (product: Product) => {
+        const exist = cartItems.find((x) => x.id === product.id);
+        if (exist) {
+            setCartItems(
+                cartItems.map((x) =>
+                    x.id === product.id ? { ...exist, qty: exist.qty+ 1 } : x
+                )
+            );
+        } else {
+            setCartItems([...cartItems, { ...product, qty: 1 }]);
+        }
+    };
+
+    const onRemove = (product: Product) => {
+        const exist = cartItems.find((x) => x.id === product.id);
+        if (exist && exist.qty === 1) {
+            setCartItems(cartItems.filter((x) => x.id !== product.id));
+        } else {
+            setCartItems(
+                cartItems.map((x) =>
+                    x.id === product.id ? { ...exist!, qty: exist!.qty - 1 } : x
+                )
+            );
+        }
+    };
+
+    return (
+        <div className="App">
+            <Header countCartItems={cartItems.length}></Header>
+            <div className="row">
+                <Main products={products} onAdd={onAdd}></Main>
+                <Basket
+                    cartItems={cartItems}
+                    onAdd={onAdd}
+                    onRemove={onRemove}
+                ></Basket>
+            </div>
         </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    );
 }
